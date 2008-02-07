@@ -11,8 +11,8 @@ check.tb <- function( tab )
             for ( j in 1:tab$variables ) {
                 tab$te[i,j] <- -tab$te[i,j]
             }
-            tab <- swap.headings( tab, i, i + tab$variables )
-            tab <- swap.vectors( tab, i, i + tab$variables )
+            tab <- swp.headings( tab, i, i + tab$variables )
+            tab <- swp.vec( tab, i, i + tab$variables )
         }
     }
     return( tab )
