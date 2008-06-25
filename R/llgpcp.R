@@ -1,14 +1,16 @@
-llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FALSE )
+llgpcp <- function( coefficients, targets, achievements, variable.classes, maxiter=1000, verbose=FALSE )
 {
 ###
 ### This function minimizes \eqn{ a'=[g_1(n,p), g_2(n,p), ..., g_K(n,p)] } subjective
-### to C x + n - p = b, x >= 0, n >= 0 and p >= 0
+### to C x + n - p = b, x >= 0, n >= 0 and p >= 0 with complementary pivoting
 ###
 ### Parameters
 ### coefficients = a matrix with the coefficients of the linear objective functions
 ### targets = a vector of target values for the objective function
 ### achievements = a data frame with the weights of the deviation variables for each
 ###                objective along with the corresponding priority level
+### variable.classes = a data frame that defines the complementary classes of
+###                    the decision variables
 ### maxiter = maximum number of iterations
 ### zero = number smaller than this value (in absolute terms) are set to zero
 ### verbose = an optional logic variable to indicate whether interm results are to be printed
@@ -18,7 +20,7 @@ llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FAL
 ###
 ### create the tableau
 ###
-    tab <- llgptab( coefficients, targets, achievements )
+    tab <- llgpcptab( coefficients, targets, achievements, variable.classes )
 ###
 ### reset the print and iteration countersls()
 ###
@@ -47,7 +49,7 @@ llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FAL
 ###
 ###     infinite loop while there a possibility of converging to a solution 
 ###
-        sp <- ev.llgp( tab, k )
+        sp <- ev.llgpcp( tab, k )
         while ( sp != 0 ) {
             tab$iter <- tab$iter + 1
             if ( tab$iter >= maxiter ) {
@@ -57,7 +59,7 @@ llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FAL
                 print( tab )
                 out <- llgpout( tab, coefficients, targets )
                 result <- list( tab=tab, out=out, converged=FALSE )
-                class( result ) <- "llgp"
+                class( result ) <- "llgpcp"
                 return( result )
             }
 ###
@@ -71,7 +73,7 @@ llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FAL
                 print( tab )
                 out <- llgpout( tab, coefficients, targets )
                 result <- list( tab=tab, out=out, converged=FALSE )
-                class( result ) <- "llgp"
+                class( result ) <- "llgpcp"
                 return( result )
             }
 ###
@@ -83,12 +85,12 @@ llgp <- function( coefficients, targets, achievements, maxiter=1000, verbose=FAL
 ###
             tab <- calc.ti.k( tab, k )
             tab <- calc.ta.k( tab, k )
-            sp <- ev.llgp( tab, k )
+            sp <- ev.llgpcp( tab, k )
             if ( verbose ) print( tab )
         }
     }
     out <- llgpout( tab, coefficients, targets )
     result <- list( tab=tab, out=out, converged=TRUE )
-    class( result ) <- "llgp"
+    class( result ) <- "llgpcp"
     return( result )
 }

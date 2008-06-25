@@ -18,8 +18,8 @@ llgptab <- function( coefficients, targets, achievements )
 ###
 ### ensure that there is at least one objective that is an absolute objective
 ###
-    if ( min( achievements$priority ) != 1 )
-        stop( "there is no absolute objective in the achievements" )
+#    if ( min( achievements$priority ) != 1 )
+#        stop( "there is no absolute objective in the achievements" )
 ###
 ### get the number of goals from the achievements data frame
 ###
